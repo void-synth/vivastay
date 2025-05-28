@@ -19,8 +19,12 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-emerald-600">
-            VivaStay
+          <Link to="/" className="flex items-center">
+            <img 
+              src="/lovable-uploads/d6b578d4-25cb-44d1-abed-0d2ebecf449c.png" 
+              alt="VivaStay" 
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
