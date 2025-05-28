@@ -53,20 +53,33 @@ const Index = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-emerald-50 to-teal-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+      <section className="relative min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-emerald-900 overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+          <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+          <div className="absolute bottom-0 right-20 w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-6000"></div>
+        </div>
+        
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-transparent to-black/20"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="text-center mb-12 pt-20">
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl">
               Find your perfect
-              <span className="text-emerald-600 block">getaway</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 block">
+                getaway
+              </span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-200 max-w-2xl mx-auto drop-shadow-lg">
               Discover unique stays and experiences around the world, from cozy cabins to luxury villas.
             </p>
           </div>
 
           {/* Search Bar */}
-          <div className="bg-white rounded-2xl shadow-lg p-4 max-w-4xl mx-auto">
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-4xl mx-auto border border-white/20">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Where</label>
@@ -119,7 +132,7 @@ const Index = () => {
                       className="pl-10 border-gray-200 focus:border-emerald-500"
                     />
                   </div>
-                  <Button className="ml-2 bg-emerald-600 hover:bg-emerald-700">
+                  <Button className="ml-2 bg-emerald-600 hover:bg-emerald-700 shadow-lg">
                     <Search className="h-5 w-5" />
                   </Button>
                 </div>
