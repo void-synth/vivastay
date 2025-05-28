@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Users, Calendar, Star, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import Navigation from '@/components/Navigation';
 
 const Index = () => {
   const [searchLocation, setSearchLocation] = useState('');
@@ -50,34 +50,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-emerald-600">
-                VivaStay
-              </Link>
-            </div>
-            
-            <div className="hidden md:flex items-center space-x-8">
-              <Link to="/browse" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Browse
-              </Link>
-              <Link to="/host" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Become a Host
-              </Link>
-              <Link to="/login" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Log in
-              </Link>
-              <Button className="bg-emerald-600 hover:bg-emerald-700">
-                Sign up
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+      <Navigation />
+      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-emerald-50 to-teal-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -145,7 +119,7 @@ const Index = () => {
                       className="pl-10 border-gray-200 focus:border-emerald-500"
                     />
                   </div>
-                  <Button className="ml-2 bg-emerald-600 hover:bg-emerald-700 px-6">
+                  <Button className="ml-2 bg-emerald-600 hover:bg-emerald-700">
                     <Search className="h-5 w-5" />
                   </Button>
                 </div>
@@ -155,7 +129,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Properties */}
+      {/* Featured Stays Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
