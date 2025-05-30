@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
+import Property from "./pages/Property";
 import Login from "./pages/Login";
 import Host from "./pages/Host";
 import GuestDashboard from "./pages/GuestDashboard";
@@ -24,6 +25,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/browse" element={<Browse />} />
+            <Route path="/property/:id" element={<Property />} />
             <Route path="/login" element={<Login />} />
             <Route path="/host" element={<Host />} />
             <Route path="/guest-dashboard" element={<GuestDashboard />} />
