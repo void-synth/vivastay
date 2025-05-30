@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { User, LogOut, Menu, X } from 'lucide-react';
+import { User, LogOut, Menu, X, LayoutDashboard } from 'lucide-react';
 import { useState } from 'react';
 
 const Navigation = () => {
@@ -35,6 +35,10 @@ const Navigation = () => {
             
             {user ? (
               <>
+                <Link to="/guest-dashboard" className="text-gray-700 hover:text-emerald-600 transition-colors flex items-center">
+                  <LayoutDashboard className="w-4 h-4 mr-1" />
+                  Guest Dashboard
+                </Link>
                 <Link to="/host" className="text-gray-700 hover:text-emerald-600 transition-colors">
                   Host Dashboard
                 </Link>
@@ -95,6 +99,13 @@ const Navigation = () => {
               
               {user ? (
                 <>
+                  <Link
+                    to="/guest-dashboard"
+                    className="block px-3 py-2 text-gray-700 hover:text-emerald-600 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Guest Dashboard
+                  </Link>
                   <Link
                     to="/host"
                     className="block px-3 py-2 text-gray-700 hover:text-emerald-600 transition-colors"

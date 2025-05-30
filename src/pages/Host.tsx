@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Home, Calendar, DollarSign, Star, Users, MapPin, Edit, Trash2 } from 'lucide-react';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import Navigation from '@/components/Navigation';
 
 const Host = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -88,33 +88,7 @@ const Host = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-emerald-600">
-                VivaStay
-              </Link>
-            </div>
-            
-            <div className="hidden md:flex items-center space-x-8">
-              <Link to="/browse" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Browse
-              </Link>
-              <Link to="/host" className="text-emerald-600 font-medium">
-                Host Dashboard
-              </Link>
-              <Link to="/profile" className="text-gray-700 hover:text-emerald-600 transition-colors">
-                Profile
-              </Link>
-              <Button variant="outline">
-                Log out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
