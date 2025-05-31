@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Star, User, CreditCard, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,10 +10,12 @@ import Navigation from '@/components/Navigation';
 
 const GuestDashboard = () => {
   const [activeTab, setActiveTab] = useState('bookings');
+  const navigate = useNavigate();
 
   const upcomingBookings = [
     {
       id: 1,
+      propertyId: "1", // Added property ID for navigation
       property: "Luxury Beachfront Villa",
       location: "Malibu, California",
       checkIn: "2024-07-15",
@@ -26,6 +28,7 @@ const GuestDashboard = () => {
     },
     {
       id: 2,
+      propertyId: "2", // Added property ID for navigation
       property: "Cozy Mountain Retreat",
       location: "Aspen, Colorado",
       checkIn: "2024-08-10",
@@ -41,6 +44,7 @@ const GuestDashboard = () => {
   const pastBookings = [
     {
       id: 3,
+      propertyId: "3", // Added property ID for navigation
       property: "Downtown Loft",
       location: "New York, NY",
       checkIn: "2024-05-01",
@@ -84,6 +88,14 @@ const GuestDashboard = () => {
       default:
         return <XCircle className="h-4 w-4 text-red-500" />;
     }
+  };
+
+  const handleViewDetails = (propertyId: string) => {
+    navigate(`/property/${propertyId}`);
+  };
+
+  const handleViewFavoriteProperty = (propertyId: number) => {
+    navigate(`/property/${propertyId}`);
   };
 
   return (
@@ -145,7 +157,12 @@ const GuestDashboard = () => {
                             {booking.status}
                           </Badge>
                         </div>
-                        <Button variant="outline" size="sm" className="mt-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-2"
+                          onClick={() => handleViewDetails(booking.propertyId)}
+                        >
                           View Details
                         </Button>
                       </div>
@@ -182,11 +199,20 @@ const GuestDashboard = () => {
                       <div className="text-right space-y-2">
                         <p className="font-semibold text-gray-900">${booking.total}</p>
                         <Badge variant="secondary">{booking.status}</Badge>
-                        {booking.canReview && (
-                          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">
-                            Write Review
+                        <div className="flex flex-col gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleViewDetails(booking.propertyId)}
+                          >
+                            View Details
                           </Button>
-                        )}
+                          {booking.canReview && (
+                            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">
+                              Write Review
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -203,7 +229,11 @@ const GuestDashboard = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {favoriteProperties.map((property) => (
-                    <div key={property.id} className="bg-white rounded-lg shadow-sm border overflow-hidden">
+                    <div 
+                      key={property.id} 
+                      className="bg-white rounded-lg shadow-sm border overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => handleViewFavoriteProperty(property.id)}
+                    >
                       <img
                         src={property.image}
                         alt={property.title}
