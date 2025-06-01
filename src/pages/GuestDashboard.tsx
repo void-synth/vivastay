@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Star, User, CreditCard, Clock, CheckCircle, XCircle } from 'lucide-react';
@@ -7,57 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import Navigation from '@/components/Navigation';
+import { useBookings } from '@/hooks/useBookings';
+import { useAuth } from '@/hooks/useAuth';
 
 const GuestDashboard = () => {
   const [activeTab, setActiveTab] = useState('bookings');
   const navigate = useNavigate();
+  const { upcomingBookings, pastBookings, loading } = useBookings();
+  const { user } = useAuth();
 
-  const upcomingBookings = [
-    {
-      id: 1,
-      propertyId: "1", // Added property ID for navigation
-      property: "Luxury Beachfront Villa",
-      location: "Malibu, California",
-      checkIn: "2024-07-15",
-      checkOut: "2024-07-20",
-      guests: 4,
-      total: 2250,
-      status: "Confirmed",
-      image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=300&h=200&fit=crop",
-      host: "Sarah"
-    },
-    {
-      id: 2,
-      propertyId: "2", // Added property ID for navigation
-      property: "Cozy Mountain Retreat",
-      location: "Aspen, Colorado",
-      checkIn: "2024-08-10",
-      checkOut: "2024-08-15",
-      guests: 2,
-      total: 1600,
-      status: "Pending",
-      image: "https://images.unsplash.com/photo-1472396961693-142e6e269027?w=300&h=200&fit=crop",
-      host: "Michael"
-    }
-  ];
-
-  const pastBookings = [
-    {
-      id: 3,
-      propertyId: "3", // Added property ID for navigation
-      property: "Downtown Loft",
-      location: "New York, NY",
-      checkIn: "2024-05-01",
-      checkOut: "2024-05-05",
-      guests: 2,
-      total: 720,
-      status: "Completed",
-      image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=300&h=200&fit=crop",
-      host: "Emma",
-      canReview: true
-    }
-  ];
-
+  // Sample favorite properties (keeping as hardcoded for now)
   const favoriteProperties = [
     {
       id: 1,
@@ -78,15 +36,28 @@ const GuestDashboard = () => {
   ];
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'Confirmed':
+    switch (status.toLowerCase()) {
+      case 'confirmed':
         return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'Pending':
+      case 'pending':
         return <Clock className="h-4 w-4 text-yellow-500" />;
-      case 'Completed':
+      case 'completed':
         return <CheckCircle className="h-4 w-4 text-blue-500" />;
       default:
         return <XCircle className="h-4 w-4 text-red-500" />;
+    }
+  };
+
+  const getStatusVariant = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return 'default';
+      case 'pending':
+        return 'outline';
+      case 'completed':
+        return 'secondary';
+      default:
+        return 'destructive';
     }
   };
 
@@ -97,6 +68,28 @@ const GuestDashboard = () => {
   const handleViewFavoriteProperty = (propertyId: number) => {
     navigate(`/property/${propertyId}`);
   };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navigation />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Please log in to view your dashboard</h1>
+            <Link to="/login">
+              <Button className="bg-emerald-600 hover:bg-emerald-700">
+                Login
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -127,48 +120,76 @@ const GuestDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {upcomingBookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center space-x-4 p-4 bg-white rounded-lg border shadow-sm">
-                      <img
-                        src={booking.image}
-                        alt={booking.property}
-                        className="w-20 h-20 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{booking.property}</h3>
-                        <p className="text-sm text-gray-600 flex items-center mt-1">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {booking.location}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {booking.checkIn} - {booking.checkOut} • {booking.guests} guests
-                        </p>
-                        <p className="text-sm text-gray-500">Hosted by {booking.host}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-gray-900">${booking.total}</p>
-                        <div className="flex items-center mt-2">
-                          {getStatusIcon(booking.status)}
-                          <Badge 
-                            variant={booking.status === 'Confirmed' ? 'default' : 'outline'}
-                            className="ml-2"
-                          >
-                            {booking.status}
-                          </Badge>
+                {loading ? (
+                  <div className="space-y-4">
+                    {[...Array(2)].map((_, index) => (
+                      <div key={index} className="animate-pulse flex space-x-4 p-4 bg-gray-100 rounded-lg">
+                        <div className="bg-gray-300 w-20 h-20 rounded-lg"></div>
+                        <div className="flex-1">
+                          <div className="bg-gray-300 h-4 w-3/4 mb-2 rounded"></div>
+                          <div className="bg-gray-300 h-3 w-1/2 mb-2 rounded"></div>
+                          <div className="bg-gray-300 h-3 w-2/3 rounded"></div>
                         </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="mt-2"
-                          onClick={() => handleViewDetails(booking.propertyId)}
-                        >
-                          View Details
-                        </Button>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : upcomingBookings.length > 0 ? (
+                  <div className="space-y-4">
+                    {upcomingBookings.map((booking) => (
+                      <div key={booking.id} className="flex items-center space-x-4 p-4 bg-white rounded-lg border shadow-sm">
+                        <img
+                          src={booking.properties?.images?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=300&h=200&fit=crop"}
+                          alt={booking.properties?.title || "Property"}
+                          className="w-20 h-20 object-cover rounded-lg"
+                        />
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900">{booking.properties?.title || 'Property'}</h3>
+                          <p className="text-sm text-gray-600 flex items-center mt-1">
+                            <MapPin className="h-4 w-4 mr-1" />
+                            {booking.properties?.location || 'Location'}
+                          </p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {formatDate(booking.check_in_date)} - {formatDate(booking.check_out_date)} • {booking.guest_count} guests
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Hosted by {booking.properties?.profiles?.first_name || 'Host'}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-gray-900">${booking.total_amount}</p>
+                          <div className="flex items-center mt-2">
+                            {getStatusIcon(booking.status)}
+                            <Badge 
+                              variant={getStatusVariant(booking.status)}
+                              className="ml-2"
+                            >
+                              {booking.status}
+                            </Badge>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="mt-2"
+                            onClick={() => handleViewDetails(booking.property_id)}
+                          >
+                            View Details
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No upcoming trips</h3>
+                    <p className="text-gray-600 mb-6">Start planning your next adventure!</p>
+                    <Link to="/browse">
+                      <Button className="bg-emerald-600 hover:bg-emerald-700">
+                        Browse Properties
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -178,45 +199,64 @@ const GuestDashboard = () => {
                 <CardTitle>Past Trips</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {pastBookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                      <img
-                        src={booking.image}
-                        alt={booking.property}
-                        className="w-20 h-20 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{booking.property}</h3>
-                        <p className="text-sm text-gray-600 flex items-center mt-1">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {booking.location}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {booking.checkIn} - {booking.checkOut} • {booking.guests} guests
-                        </p>
+                {loading ? (
+                  <div className="space-y-4">
+                    {[...Array(2)].map((_, index) => (
+                      <div key={index} className="animate-pulse flex space-x-4 p-4 bg-gray-100 rounded-lg">
+                        <div className="bg-gray-300 w-20 h-20 rounded-lg"></div>
+                        <div className="flex-1">
+                          <div className="bg-gray-300 h-4 w-3/4 mb-2 rounded"></div>
+                          <div className="bg-gray-300 h-3 w-1/2 mb-2 rounded"></div>
+                          <div className="bg-gray-300 h-3 w-2/3 rounded"></div>
+                        </div>
                       </div>
-                      <div className="text-right space-y-2">
-                        <p className="font-semibold text-gray-900">${booking.total}</p>
-                        <Badge variant="secondary">{booking.status}</Badge>
-                        <div className="flex flex-col gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleViewDetails(booking.propertyId)}
-                          >
-                            View Details
-                          </Button>
-                          {booking.canReview && (
+                    ))}
+                  </div>
+                ) : pastBookings.length > 0 ? (
+                  <div className="space-y-4">
+                    {pastBookings.map((booking) => (
+                      <div key={booking.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                        <img
+                          src={booking.properties?.images?.[0] || "https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=300&h=200&fit=crop"}
+                          alt={booking.properties?.title || "Property"}
+                          className="w-20 h-20 object-cover rounded-lg"
+                        />
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900">{booking.properties?.title || 'Property'}</h3>
+                          <p className="text-sm text-gray-600 flex items-center mt-1">
+                            <MapPin className="h-4 w-4 mr-1" />
+                            {booking.properties?.location || 'Location'}
+                          </p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {formatDate(booking.check_in_date)} - {formatDate(booking.check_out_date)} • {booking.guest_count} guests
+                          </p>
+                        </div>
+                        <div className="text-right space-y-2">
+                          <p className="font-semibold text-gray-900">${booking.total_amount}</p>
+                          <Badge variant="secondary">{booking.status}</Badge>
+                          <div className="flex flex-col gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleViewDetails(booking.property_id)}
+                            >
+                              View Details
+                            </Button>
                             <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">
                               Write Review
                             </Button>
-                          )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No past trips</h3>
+                    <p className="text-gray-600">Your completed trips will appear here.</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -295,20 +335,8 @@ const GuestDashboard = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                    <p className="text-gray-900">John</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                    <p className="text-gray-900">Doe</p>
-                  </div>
-                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <p className="text-gray-900">john.doe@example.com</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                    <p className="text-gray-900">+1 (555) 123-4567</p>
+                    <p className="text-gray-900">{user?.email}</p>
                   </div>
                   <Button variant="outline" className="w-full">
                     Edit Profile
