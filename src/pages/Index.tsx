@@ -59,13 +59,11 @@ const Index = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('/lovable-uploads/5eb8f437-daa8-4b94-bf27-0fa4c9915334.png')"
+            backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1920&q=80')"
           }}
         />
         
-        {/* Overlay gradient for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/30 to-black/40"></div>
-        
+        {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center mb-12 pt-20">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl">
